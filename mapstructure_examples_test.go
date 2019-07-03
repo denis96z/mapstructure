@@ -201,3 +201,27 @@ func ExampleDecode_embeddedStruct() {
 	// Output:
 	// Mitchell Hashimoto, San Francisco
 }
+
+func ExampleDecode_requiredField() {
+	// The required tag can indicate which fields in the struct are mandatory.
+	type Person struct {
+		FirstName string `mapstructure:",required"`
+		LastName  string `mapstructure:",required"`
+	}
+
+	input := map[string]interface{}{
+		"LastName": "Hashimoto",
+	}
+
+	var result Person
+	err := Decode(input, &result)
+	if err == nil {
+		panic("should have an error")
+	}
+
+	fmt.Println(err.Error())
+	// Output:
+	// 1 error(s) decoding:
+
+	// * '' is missing required key: FirstName
+}
