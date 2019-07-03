@@ -137,6 +137,11 @@ type Tagged struct {
 	Value string `mapstructure:"foo"`
 }
 
+type Required struct {
+	RequiredBar string `mapstructure:"bar,required"`
+	Value       string `mapstructure:"foo"`
+}
+
 type TypeConversionResult struct {
 	IntToFloat         float32
 	IntToUint          uint
@@ -1912,6 +1917,20 @@ func TestWeakDecodeMetadata(t *testing.T) {
 	expectedUnused := []string{"unused"}
 	if !reflect.DeepEqual(md.Unused, expectedUnused) {
 		t.Fatalf("bad unused: %#v", md.Unused)
+	}
+}
+
+func TestRequired(t *testing.T) {
+	t.Parallel()
+
+	input := map[string]interface{}{
+		"foo": "bar",
+	}
+
+	var result Required
+	err := Decode(input, &result)
+	if err == nil {
+		t.Fatal("unexpected success decoding required field was missing")
 	}
 }
 
